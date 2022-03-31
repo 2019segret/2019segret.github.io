@@ -9,6 +9,7 @@ nav_order: 2
 
 ## Understanding the ecosystem, starting from scratch
 
+
 ![](../../img/web3.png)
 
 Read the article on [Medium](https://medium.com/@__initial__/a-beginning-journey-in-web3-79a0bc169cd).
