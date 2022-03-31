@@ -8,7 +8,7 @@ nav_order: 2
 # An advised set-up to start coding in Python
 ## From a random non-expert programmer
 
-![](img/intro_conda.jpeg)
+![](../../img/intro_conda.jpeg)
 
 Read the article on [Medium](https://medium.com/@__initial__/an-advised-set-up-to-start-coding-with-python-5fbb166bd85).
 
@@ -40,18 +40,18 @@ Ok, it’s cool you have python but where do you write code now?? To serve that 
 Same story, head to [Visual Studio Code](https://code.visualstudio.com/download) and choose the proper installer for your OS. Once it’s downloaded, run the installer, follow the instructions and that’s it!
 Now open VScode, follow the probable get-to-know instructions and then head straight to the sidebar that should be on the left. Click on “extensions”. The logo looks like this :
 
-![](img/extension.png)
+![](../../img/extension.png)
 
 And type in “Python” in the search bar that just opened and install the first choice. This instruction is only to say “Hey VSCode, I’ll be coding in python so provide me with the necessary internal tools to make it work”. You may ask why these tools aren’t already installed, well it’s only to make the whole package lighter from the origin and then you add on what’s necessary to you and you only. It helps to stay consistent with your code too.
 Download the IntelliSense one (the first), it should look like this:
 
-![](img/vscode.png)
+![](../../img/vscode.png)
 
 Now you’re able to run your code!
 Let’s go ahead and try. Just before that, check that in the low left corner, in the blue band, a “python interpreter” is selected. Otherwise, click on “Select python interpreter” and a window should open on the top of your window with one option: “Python3.x.x” along with the default path I told you to memorize at the beginning! If not, just select “enter interpreter path” and enter the default path (probably /usr/bin/python3).
 Open a new file on VSCode, you should figure out how to do that yourself, and make sure it has the “py” extension! Try typing a simple code line such as print(“Hello World!”) and execute the code with the Run python file logo in the upper right window.
 
-![](img/vscode2.png)
+![](../../img/vscode2.png)
 
 It will display a terminal with what you asked in it. Notice that on the side there is a panel where you can load a folder and see all the files in it. It is mandatory for coding projects!
 Congratulations you just ran your first python code on VSCode!
