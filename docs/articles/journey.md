@@ -15,7 +15,9 @@ nav_order: 2
 Read the article on [Medium](https://medium.com/@__initial__/a-beginning-journey-in-web3-79a0bc169cd).
 
 From now on, I want to dig into the web3 environment and take you with me. This is extremely thrilling as having only scratched its surface, I can tell this fairly new ecosystem has a huge upside potential for the emergence of new ideas and for having fun! This is why I will try my best to walk you through my understanding of web3 with a series of articles. I’ll keep you informed with documentation such as links, tutorials, the stack I am using, etc so that you can eventually reproduce anything you want. This will also serve as a logbook for me.
+
 Just to give you a little heads up, I am not starting from “nothing”. I am a master’s degree candidate in both applied mathematics and computer science. Therefore, I believe a bunch of technical points will be overlooked although I intend to avoid doing that. Also, I have pursued a 3 month long Defi project on the side, but it’s almost as if it is irrelevant: the purpose was to exploit a well-known vulnerability. However, the project was such a niche that I haven’t really learned anything about web3 besides extremally specific technicalities.
+
 That project, along with regular exchanges with a friend, really led me to believe there are many great things to do in Web3 (I don’t know which one yet, the whole purpose is to find out as I walk you through my journey!). Keep in mind that while this article will be on the “surface”, I will write new ones that will get more and more specific.
 Let’s get started!
 
@@ -41,6 +43,7 @@ Enough with the unintelligible definition: the way I see it, web3 is an innovati
 It seems there are endless possibilities to develop, whether it’s a Dapp (Decentralized applications just like the one that could replace Spotify in web3 even though Spotify is trying to get a piece of the cake already) or a DAO, etc. You’ll come to that realization when reading more about the ecosystem!
 
 ### An overview of the ecosystem
+
 
 Disclaimer: this is not my own work I present below. Many of the content, if not all, were already gathered in a single [doc](https://docs.google.com/document/d/1ObiFHmmZnWmX5alar-O81QwkAHFERKUFDDo2AcEDPZg/edit#heading=h.j0ae9beff73i) by the amazing Jessica Lawson. However, I tried my best to boil down the number of links while preserving the intelligibility of content.
 The links are divided, as done by Jessica, into the several main categories that have emerged in web3 yet.
