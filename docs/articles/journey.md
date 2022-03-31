@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Journey in Web3
-parent: About my posts
+parent: Posts
 nav_order: 2
 ---
 

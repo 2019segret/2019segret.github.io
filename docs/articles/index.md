@@ -1,6 +1,6 @@
 ---
 layout: default
-title: About my posts
+title: Posts
 nav_order: 2
 has_children: true
 ---
