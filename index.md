@@ -1,6 +1,6 @@
 # About
 
-![](img/me.png)
+![](img/me.png | width=100)
 
 I am currently a research scientist intern at [Sony Computer Science Laboratories](https://csl.sony.fr/). I am conducting machine learning research. My work focuses on the recently developped diffusion models and score-based generative models. 
 
