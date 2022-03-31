@@ -2,7 +2,7 @@
 
 ![](img/me.png)
 
-I am currently a research scientist intern at [Sony Computer Science Laboratories](https://csl.sony.fr/) conducting machine learning research. My work focuses on the recently developped diffusion models and score-based generative models. Prior to that, I was an intern quantitative analyst at Lazard Asset Management, for 6 months. I hold a Bachelor's and a Master's degree in Computer Science and Applied Mathematics from CentraleSupélec.
+I am currently a research scientist intern at [Sony Computer Science Laboratories](https://csl.sony.fr/) conducting machine learning research. My work focuses on the recently developped diffusion models and score-based generative models. Prior to that, I was an quantitative analyst intern at Lazard Asset Management, for 6 months. I hold a Bachelor's and a Master's degree in Computer Science and Applied Mathematics from CentraleSupélec.
 
 I usually spend my time learning about new topics. Whether it is fundamental science, related to code or even to arts I thrive digging in the subject and grasp as much as I can. My goal is always to create from an idea, develop that idea until it is tangible, in any field whatsoever. This is a true passion for me. That way, I deeply care about my work.
 
