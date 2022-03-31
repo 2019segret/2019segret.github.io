@@ -1,6 +1,7 @@
 ---
 layout: default
-title: articles
+title: Python set-up
+parent: About my posts
 nav_order: 2
 ---
 

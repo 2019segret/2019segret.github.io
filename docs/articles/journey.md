@@ -1,6 +1,7 @@
 ---
 layout: default
-title: articles
+title: Journey in Web3
+parent: About my posts
 nav_order: 2
 ---
 
