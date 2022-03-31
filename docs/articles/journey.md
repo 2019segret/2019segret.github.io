@@ -2,7 +2,6 @@
 layout: default
 title: articles
 nav_order: 2
-has_children: true
 ---
 
 # A beginning journey in Web 3

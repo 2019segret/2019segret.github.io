@@ -2,7 +2,6 @@
 layout: default
 title: articles
 nav_order: 2
-has_children: true
 ---
 
 # An advised set-up to start coding in Python
