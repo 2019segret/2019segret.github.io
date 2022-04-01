@@ -8,6 +8,6 @@ I usually spend my time learning about new topics. Whether it is fundamental sci
 
 In addition to my scientific work, I enjoy learning and building on Web3 and DeFi. I added a section [here](https://2019segret.github.io/docs/articles/) where I share posts related to those topics. I have originally written those on my [medium account](https://medium.com/@__initial__) if you want to take a look 😊.
 
-
+You can find some of my work on my [githube page](https://github.com/2019segret). I intend to progressively add more projects I have worked on. For the moment, relevant work boils down to a portfolio tracker repo.
 
 
