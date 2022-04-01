@@ -3,7 +3,7 @@ remote_theme: just-the-docs/just-the-docs
 title: Thomas Segré
 description: Personal Website
 baseurl: "/" # the subpath of your site, e.g. /blog
-url: "https://2019segret.github.io"
+url: "https://thsgr.github.io"
 
 search_enabled: true
 search:
