@@ -112,7 +112,7 @@ $$p_\theta( x_{t-1} \mid x_t) =
 \right.
 $$
 
-The rest is similar to DDPM with the same training steps but a different sampling formula. Two things worth noticing is that first DDIM becomes a DDPM model using \\(\sigma_t = \sqrt{(1 - \alpha_{t-1}) / (1 - \alpha_t)} \sqrt{1 - \alpha_t / \alpha_{t-1}}\\). Second, setting \\(\forall t, \sigma_t = 0 \\) renders the process completely deterministic. Samples are generated with a fixed procedure. This is that particular case than Song et al. name \textit{Denoising Diffusion Implicit Model}.
+The rest is similar to DDPM with the same training steps but a different sampling formula. Two things worth noticing is that first DDIM becomes a DDPM model using \\(\sigma_t = \sqrt{(1 - \alpha_{t-1}) / (1 - \alpha_t)} \sqrt{1 - \alpha_t / \alpha_{t-1}}\\). Second, setting \\(\forall t, \sigma_t = 0 \\) renders the process completely deterministic. Samples are generated with a fixed procedure. This is that particular case than Song et al. name Denoising Diffusion Implicit Model.
 
 Authors also offer an accelerated generation process along with a correspondence with Neural ODEs that I leave aside in this work. 
 
