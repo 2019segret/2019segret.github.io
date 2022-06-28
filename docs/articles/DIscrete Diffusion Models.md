@@ -4,14 +4,6 @@ title: Discrete diffusion models
 parent: Posts
 nav_order: 2
 ---
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      processEscapes: true
-    }
-  });
-</script>
 <script type="text/javascript"
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
@@ -19,7 +11,7 @@ nav_order: 2
 
 The craze for diffusion models started in 2019 and since then, the impressive results of such models drew the attention of the ML research community. As of today, an ever increasing amount of teams are conducting active research and publishing in the field. This series of articles is an attempt at summarizing the major contributions, their general ideas, the common architectures along with discussing their computational limitations. I could not possibly cover all papers that have been published so far, and that many work that has not been included here deserve full consideration too. This document is for educational purposes, and aims to be an introductory work for any one willing to enter the field. There would be a lot more to say about each contributions but I tried to keep a general approach.
 
-Sohl-Dickstein et al. (2015) [1] introduced diffusion probabilistic models, a class of generative models which match a data distribution by learning to reverse a multi-step noising process. It was then followed by a myriad of variations, improvements and evolution (Song et al. [2], Dhariwal et al. [3], Song et al. [4]) which lead to impressive results (Ramesh et al. [5], Saharia et al. [6]). The whole purpose is to draw fresh new samples from a distribution that cannot easily be tracked.  Instinctively, the process boils down to two steps. First, the forward process (training time), which consists in adding gradual noise to the intangible distribution to turn it into a known-one (typically gaussian), from which we can sample from. While doing so, a neural networks attempts to learn the "path" the prior distribution has followed to reach the posterior. The second step is the backward process, referred to as inference. It consists in sampling from the known distribution and going back up the previously learned "path" until we reach the intangible distribution. Therefore we end up with a new sampled point. Comparatively with GANs, diffusion models avoid collapse mode (Metz et al. [7]) and offer more diversity of generated samples. Moreover, they seem to be usually more easily trainable because they require less hyperparameters, are more stable. However, a major drawback remains the inference time that usually requires hundreds up to thousands forward passes in a neural network, which make inference too long.
+Sohl-Dickstein et al. (2015) [1] introduced diffusion probabilistic models, a class of generative models which match a data distribution by learning to reverse a multi-step noising process. It was then followed by a myriad of variations, improvements and evolution (Song et al., Dhariwal et al. [3], Song et al. [4]) which lead to impressive results (Ramesh et al. [5], Saharia et al. [6]). The whole purpose is to draw fresh new samples from a distribution that cannot easily be tracked.  Instinctively, the process boils down to two steps. First, the forward process (training time), which consists in adding gradual noise to the intangible distribution to turn it into a known-one (typically gaussian), from which we can sample from. While doing so, a neural networks attempts to learn the "path" the prior distribution has followed to reach the posterior. The second step is the backward process, referred to as inference. It consists in sampling from the known distribution and going back up the previously learned "path" until we reach the intangible distribution. Therefore we end up with a new sampled point. Comparatively with GANs, diffusion models avoid collapse mode (Metz et al. [7]) and offer more diversity of generated samples. Moreover, they seem to be usually more easily trainable because they require less hyperparameters, are more stable. However, a major drawback remains the inference time that usually requires hundreds up to thousands forward passes in a neural network, which make inference too long.
 
 ## Discrete Diffusion Models 
 
@@ -42,7 +34,7 @@ $$
   \end{split}
 $$
 
-Instead of having to diffuse step by step to reach an arbitrary time, which is heavy, there is a powerful property of the DDPM Markov chain that can be leveraged: (using the notation $\alpha_t:= 1 - \beta_t, \ \overline{\alpha}_t = \prod_{s=1}^t \alpha_s$), $q(x_t | x_0) = \mathcal{N}(x_t \ ; \ \sqrt{\overline{\alpha}_t} x_0, (1 - \overline{\alpha}_t)\mathbf{I})$. This renders the forward process fairly easy as it allows to diffuse at any timestep $t$ in closed form.  For the reverse process, DDPM looks for a distribution that is as close as possible to the posterior $q$. The latent variables take the following form: 
+Instead of having to diffuse step by step to reach an arbitrary time, which is heavy, there is a powerful property of the DDPM Markov chain that can be leveraged: (using the notation \\(\alpha_t:= 1 - \beta_t, \ \overline{\alpha}_t = \prod_{s=1}^t \alpha_s \\) ), $q(x_t | x_0) = \mathcal{N}(x_t \ ; \ \sqrt{\overline{\alpha}_t} x_0, (1 - \overline{\alpha}_t)\mathbf{I})$. This renders the forward process fairly easy as it allows to diffuse at any timestep $t$ in closed form.  For the reverse process, DDPM looks for a distribution that is as close as possible to the posterior $q$. The latent variables take the following form: 
 
 $$
 \begin{split}
@@ -64,19 +56,19 @@ $$
 \text{ELBO} = \mathbb{E}_q[D_{KL}(q(x_T | x_0) \ || \ p(x_T)) + \sum_{t > 1} D_{KL}(q(x_{t-1} | x_t, x_0) \ || \ p_\theta(x_{t-1} | x_t)) - \text{log}(p_\theta(x_0 | x_1))].
 $$
 
-As for $\mathbf{\mu}_\theta(x_t, t)$ and $\mathbf{\Sigma}_\theta(x_t, t)$, they have been left out until now. Ho et al.\~cite{DDPM} propose to fix $\mathbf{\Sigma}_\theta(x_t, t) = \beta_t \mathbf{I}$ (Fore more details, Bao et al. [9] propose an analytic solution of the real estimate). Regarding $\mathbf{\mu}_\theta$, authors use the fact that there exists a closed form for the posterior conditioned on $x_0$:  $q(x_{t-1} | x_t, x_0) = \mathcal{N}(x_{t-1}; \mathbf{\tilde{\mu}}_t(x_t, x_0), \tilde{\beta}_t \mathbf{I})$. They then inject it into the time-corresponding KL term of the ELBO equation and which leads to: 
+As for $\mathbf{\mu}_\theta(x_t, t)$ and $\mathbf{\Sigma}_\theta(x_t, t)$, they have been left out until now. Ho et al.\~cite{DDPM} propose to fix $\mathbf{\Sigma}_\theta(x_t, t) = \beta_t \mathbf{I}$ (Fore more details, Bao et al. [9]propose an analytic solution of the real estimate). Regarding $\mathbf{\mu}_\theta$, authors use the fact that there exists a closed form for the posterior conditioned on $x_0$:  $q(x_{t-1} | x_t, x_0) = \mathcal{N}(x_{t-1}; \mathbf{\tilde{\mu}}_t(x_t, x_0), \tilde{\beta}_t \mathbf{I})$. They then inject it into the time-corresponding KL term of the ELBO equation and which leads to: 
 
 $$
 \mathbf{\mu}_\theta(x_t, t) = \frac{1}{\sqrt{\alpha_t}} ( x_t - \frac{\beta_t}{\sqrt{1 - \overline{\alpha}_t}} \mathbf{\epsilon}_\theta(x_t, t))
 $$
 
-with $x_t = \sqrt{\overline{\alpha}_t} x_0 + \sqrt{1 - \overline{\alpha}_t} \epsilon, \ \ \epsilon \sim \mathcal{N}(0, \mathbf{I})$ . This means that learning the latent variables boils down to learning the noise that's been added at each time step. Finally, Ho et al. [8] sum up the process with the following algorithms:
+with $x_t = \sqrt{\overline{\alpha}_t} x_0 + \sqrt{1 - \overline{\alpha}_t} \epsilon, \ \ \epsilon \sim \mathcal{N}(0, \mathbf{I})$ . This means that learning the latent variables boils down to learning the noise that's been added at each time step. Finally, Ho et al. sum up the process with the following algorithms:
 
 ![](../../img/algoDDPM.png)
 
 ### DDIM: Denoising Diffusion Implicit Models
 
-The work of Song et al. [4] aims at reducing the number of iterations required by the generative models. Authors start from DDPM and observe that its objective only relies on $q(x_t | x_0)$ but not on the terms $q(x_{1:T} | x_0)$. Since it is possible from a set of marginals to produce different joint distributions, DDIM investigates non-Markovian inference process with the same objective function as DDPM.To do so, the work considers the following distributions, $\sigma$ being a real positive $T$-dimensional vector: 
+The work of Song et al. aims at reducing the number of iterations required by the generative models. Authors start from DDPM and observe that its objective only relies on $q(x_t | x_0)$ but not on the terms $q(x_{1:T} | x_0)$. Since it is possible from a set of marginals to produce different joint distributions, DDIM investigates non-Markovian inference process with the same objective function as DDPM.To do so, the work considers the following distributions, $\sigma$ being a real positive $T$-dimensional vector: 
 
 $$
 \begin{split}
