@@ -35,35 +35,35 @@ Ho et al. [8] introduce DDPM. Given samples, the model starts from a data distri
 
 $$
   \begin{split}
-  q(x_{1:T} | x_0 ) =& \prod_{t=1}^T q(x_t | x_{t-1}), \  
+  q(x_{1:T} \mid x_0 ) =& \prod_{t=1}^T q(x_t \mid x_{t-1}), \  
   \\ \text{with} \ \ 
-  q(x_t | x_{t-1}):=& \ \mathcal{N}(x_t \ ; \ \sqrt{1 - \beta_t} x_{t-1}, \beta_t \mathbf{I})
+  q(x_t \mid x_{t-1}):=& \ \mathcal{N}(x_t \ ; \ \sqrt{1 - \beta_t} x_{t-1}, \beta_t \mathbf{I})
   \end{split}
 $$
 
-Instead of having to diffuse step by step to reach an arbitrary time, which is heavy, there is a powerful property of the DDPM Markov chain that can be leveraged: (using the notation \\(\alpha_t:= 1 - \beta_t, \ \overline{\alpha}_t = \prod_{s=1}^t \alpha_s \\) ), \\(q(x_t | x_0) = \mathcal{N}(x_t \ ; \ \sqrt{\overline{\alpha}_t} x_0, (1 - \overline{\alpha}_t)\mathbf{I})\\). This renders the forward process fairly easy as it allows to diffuse at any timestep $t$ in closed form.  For the reverse process, DDPM looks for a distribution that is as close as possible to the posterior \\(q\\). The latent variables take the following form: 
+Instead of having to diffuse step by step to reach an arbitrary time, which is heavy, there is a powerful property of the DDPM Markov chain that can be leveraged: (using the notation \\(\alpha_t:= 1 - \beta_t, \ \overline{\alpha_t} = \prod_{s=1}^t \alpha_s \\) ), \\(q(x_t \mid x_0) = \mathcal{N}(x_t \ ; \ \sqrt{\overline{\alpha}_t} x_0, (1 - \overline{\alpha}_t)\mathbf{I})\\). This renders the forward process fairly easy as it allows to diffuse at any timestep $t$ in closed form.  For the reverse process, DDPM looks for a distribution that is as close as possible to the posterior \\(q\\). The latent variables take the following form: 
 
 $$
 \begin{split}
   p_{\theta}(x_0) &= \int p_{\theta}(x_{0:T}) dx_{0:T} \  
   \text{where}  \\
-  p_{\theta}(x_{0:T})&:= p_{\theta}(x_{T}) \prod_{t=1}^T p_{\theta}(x_{t-1} | x_t) 
+  p_{\theta}(x_{0:T})&:= p_{\theta}(x_{T}) \prod_{t=1}^T p_{\theta}(x_{t-1} \mid x_t) 
   \end{split}
 $$
 
 With the parametrization: 
 $$
-p_{\theta}(x_{t-1} | x_t) = 
+p_{\theta}(x_{t-1} \mid x_t) = 
   \mathcal{N}( x_t ; \mathbf{\mu}_\theta(x_t, t), \mathbf{\Sigma}_\theta(x_t, t))
 $$
 
 Since this is a parametric model, it is natural to look to compute the exact marginal likelihood and maximize it. However, since the exact likelihood is not tractable, we'll content ourselves with approaching it using variational approximation. This means we should try looking for a distribution that is as close as possible to the true posterior. In practice this means maximizing the Evidence Lower Bound (ELBO). But as it turns out,  this is equivalent to minimizing a KL divergence as the ELBO can be re written as a sum of KL terms at between each time steps in this case:
 
 $$
-\text{ELBO} = \mathbb{E}_q[D_{KL}(q(x_T | x_0) \ || \ p(x_T)) + \sum_{t > 1} D_{KL}(q(x_{t-1} | x_t, x_0) \ || \ p_\theta(x_{t-1} | x_t)) - \text{log}(p_\theta(x_0 | x_1))].
+\text{ELBO} = \mathbb{E}_q[D_{KL}(q(x_T \mid x_0) \ \mid\mid \ p(x_T)) + \sum_{t > 1} D_{KL}(q(x_{t-1} \mid x_t, x_0) \ \mid\mid \ p_\theta(x_{t-1} \mid x_t)) - \text{log}(p_\theta(x_0 \mid x_1))].
 $$
 
-As for \\(\mathbf{\mu}_\theta(x_t, t)\\) and \\(\mathbf{\Sigma}_\theta(x_t, t)\\), they have been left out until now. Ho et al.\~cite{DDPM} propose to fix \\(\mathbf{\Sigma}_\theta(x_t, t) = \beta_t \mathbf{I}\\) (Fore more details, Bao et al. [9]propose an analytic solution of the real estimate). Regarding \\(\mathbf{\mu}_\theta\\), authors use the fact that there exists a closed form for the posterior conditioned on \\(x_0\\):  \\(q(x_{t-1} | x_t, x_0) = \mathcal{N}(x_{t-1}; \mathbf{\tilde{\mu}}_t(x_t, x_0), \tilde{\beta}_t \mathbf{I})\\). They then inject it into the time-corresponding KL term of the ELBO equation and which leads to: 
+As for \\(\mathbf{\mu}_\theta(x_t, t)\\) and \\(\mathbf{\Sigma}_\theta(x_t, t)\\), they have been left out until now. Ho et al.\~cite{DDPM} propose to fix \\(\mathbf{\Sigma}_\theta(x_t, t) = \beta_t \mathbf{I}\\) (Fore more details, Bao et al. [9]propose an analytic solution of the real estimate). Regarding \\(\mathbf{\mu}_\theta\\), authors use the fact that there exists a closed form for the posterior conditioned on \\(x_0\\):  \\(q(x_{t-1} \mid x_t, x_0) = \mathcal{N}(x_{t-1}; \mathbf{\tilde{\mu}}_t(x_t, x_0), \tilde{\beta}_t \mathbf{I})\\). They then inject it into the time-corresponding KL term of the ELBO equation and which leads to: 
 
 $$
 \mathbf{\mu}_\theta(x_t, t) = \frac{1}{\sqrt{\alpha_t}} ( x_t - \frac{\beta_t}{\sqrt{1 - \overline{\alpha}_t}} \mathbf{\epsilon}_\theta(x_t, t))
@@ -75,12 +75,10 @@ with \\(x_t = \sqrt{\overline{\alpha}_t} x_0 + \sqrt{1 - \overline{\alpha}_t} \e
 
 ### DDIM: Denoising Diffusion Implicit Models
 
-The work of Song et al. aims at reducing the number of iterations required by the generative models. Authors start from DDPM and observe that its objective only relies on \\(q(x_t | x_0)\\) but not on the terms \\(q(x_{1:T} | x_0)\\). Since it is possible from a set of marginals to produce different joint distributions, DDIM investigates non-Markovian inference process with the same objective function as DDPM.To do so, the work considers the following distributions, \\(\sigma\\) being a real positive \\(T\\)-dimensional vector: 
+The work of Song et al. aims at reducing the number of iterations required by the generative models. Authors start from DDPM and observe that its objective only relies on \\(q(x_t \mid x_0)\\) but not on the terms \\(q(x_{1:T} \mid x_0)\\). Since it is possible from a set of marginals to produce different joint distributions, DDIM investigates non-Markovian inference process with the same objective function as DDPM.To do so, the work considers the following distributions, \\(\sigma\\) being a real positive \\(T\\)-dimensional vector: 
 
 $$
-\begin{split}
-  q_{\sigma}(x_{1:T} | x_0 ):= q_{\sigma}(x_T | x_0 ) \prod_{t=1}^T q_{\sigma}(x_{t-1} | x_t, x_0 )
-  \end{split}
+  q_{\sigma}(x_{1:T} \mid x_0 ):= q_{\sigma}(x_T \mid x_0 ) \prod_{t=1}^T q_{\sigma}(x_{t-1} \mid x_t, x_0 )
 $$
 
 $$
@@ -88,28 +86,28 @@ $$
   \text{where}
   \left\{
     \begin{array}{ll}
-        q_{\sigma}(x_{T} | x_0) = \mathcal{N}(\sqrt{\alpha_T} x_0, (1 - \alpha_T)\mathbf{I}) & \\
-        q_{\sigma}(x_{t-1} | x_t, x_0 ) = \mathcal{N}(m(x_0, x_t), \sigma_t^2 \mathbf{I}) &\\
+        q_{\sigma}(x_{T} \mid x_0) = \mathcal{N}(\sqrt{\alpha_T} x_0, (1 - \alpha_T)\mathbf{I}) & \\
+        q_{\sigma}(x_{t-1} \mid x_t, x_0 ) = \mathcal{N}(m(x_0, x_t), \sigma_t^2 \mathbf{I}) &\\
         m(x_0,x_t) =  \sqrt{1 - \alpha_{t-1} - \sigma_t^2} \frac{x_t - \sqrt{\alpha_t} x_0}{\sqrt{1 - \alpha_{t-1}}} +\sqrt{\alpha_{t-1}} x_0&
     \end{array}
 \right.
   \end{split}
 $$
 
-The complex mean \\(m(x_0, x_t)\\) is to ensure that \\(q_\sigma(x_t | x_0) \sim \mathcal{N}(\sqrt{\alpha_t} x_0, (1 - \alpha_t)\mathbf{I})\\), same as in DDPM. Notice that the process is not Markovian anymore as knowing \\(x_t\\) relies on knowing both \\(x_{t-1}\\) and \\(x_0\\). 
+The complex mean \\(m(x_0, x_t)\\) is to ensure that \\(q_\sigma(x_t \mid x_0) \sim \mathcal{N}(\sqrt{\alpha_t} x_0, (1 - \alpha_t)\mathbf{I})\\), same as in DDPM. Notice that the process is not Markovian anymore as knowing \\(x_t\\) relies on knowing both \\(x_{t-1}\\) and \\(x_0\\). 
 
-For DDPM, we mentioned we were looking for a distribution that is trainable. Same goes for DDIM, they define \\(p_\theta( x_{t-1} | x_t)\\). The key idea is to leverage tractability of \\(q_{\sigma}(x_{t-1} | x_t, x_0 )\\). To do so requires knowledge of \\(x_t\\) (direct access since it is an observed variable) and \\(x_0\\). Now the trick is to rewrite \\(x_t = \sqrt{\overline{\alpha}_t} x_0 + \sqrt{1 - \overline{\alpha}_t} \epsilon \\) to get an estimate of denoised observation: 
+For DDPM, we mentioned we were looking for a distribution that is trainable. Same goes for DDIM, they define \\(p_\theta( x_{t-1} \mid x_t)\\). The key idea is to leverage tractability of \\(q_{\sigma}(x_{t-1} \mid x_t, x_0 )\\). To do so requires knowledge of \\(x_t\\) (direct access since it is an observed variable) and \\(x_0\\). Now the trick is to rewrite \\(x_t = \sqrt{\overline{\alpha}_t} x_0 + \sqrt{1 - \overline{\alpha}_t} \epsilon \\) to get an estimate of denoised observation: 
 
 $$f_\theta^{(t)}(x_t):= (x_t - \sqrt{1 - \alpha_t} \epsilon_\theta^{(t)} (x_t)) / \sqrt{\alpha_t}$$
 
 Therefore, we have: 
 
 
-$$p_\theta( x_{t-1} | x_t) = 
+$$p_\theta( x_{t-1} \mid x_t) = 
     \left\{
     \begin{array}{ll}
         \mathcal{N}(f_\theta^{(1)}(x_1), \sigma_1^2\mathbf{I}) \ \text{if} \ t=1  & \\
-        q_{\sigma}(x_{t-1} | x_t, f_\theta^{(t)}(x_t) ) &
+        q_{\sigma}(x_{t-1} \mid x_t, f_\theta^{(t)}(x_t) ) &
     \end{array}
 \right.
 $$
