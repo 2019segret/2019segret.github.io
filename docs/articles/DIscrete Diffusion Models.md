@@ -7,6 +7,14 @@ nav_order: 2
 <script type="text/javascript"
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+<script type="text/x-mathjax-config">
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ["\\(", "\\)"]],
+      processEscapes: true,
+    }
+  }
+</script>
 # Diffusion Models (Part 1)
 
 The craze for diffusion models started in 2019 and since then, the impressive results of such models drew the attention of the ML research community. As of today, an ever increasing amount of teams are conducting active research and publishing in the field. This series of articles is an attempt at summarizing the major contributions, their general ideas, the common architectures along with discussing their computational limitations. I could not possibly cover all papers that have been published so far, and that many work that has not been included here deserve full consideration too. This document is for educational purposes, and aims to be an introductory work for any one willing to enter the field. There would be a lot more to say about each contributions but I tried to keep a general approach.
@@ -34,7 +42,7 @@ $$
   \end{split}
 $$
 
-Instead of having to diffuse step by step to reach an arbitrary time, which is heavy, there is a powerful property of the DDPM Markov chain that can be leveraged: (using the notation \\(\alpha_t:= 1 - \beta_t, \ \overline{\alpha}_t = \prod_{s=1}^t \alpha_s \\) ), $q(x_t | x_0) = \mathcal{N}(x_t \ ; \ \sqrt{\overline{\alpha}_t} x_0, (1 - \overline{\alpha}_t)\mathbf{I})$. This renders the forward process fairly easy as it allows to diffuse at any timestep $t$ in closed form.  For the reverse process, DDPM looks for a distribution that is as close as possible to the posterior $q$. The latent variables take the following form: 
+Instead of having to diffuse step by step to reach an arbitrary time, which is heavy, there is a powerful property of the DDPM Markov chain that can be leveraged: (using the notation $\alpha_t:= 1 - \beta_t, \ \overline{\alpha}_t = \prod_{s=1}^t \alpha_s $ ), $q(x_t | x_0) = \mathcal{N}(x_t \ ; \ \sqrt{\overline{\alpha}_t} x_0, (1 - \overline{\alpha}_t)\mathbf{I})$. This renders the forward process fairly easy as it allows to diffuse at any timestep $t$ in closed form.  For the reverse process, DDPM looks for a distribution that is as close as possible to the posterior $q$. The latent variables take the following form: 
 
 $$
 \begin{split}
