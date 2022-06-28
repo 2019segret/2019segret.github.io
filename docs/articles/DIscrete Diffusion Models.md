@@ -22,7 +22,7 @@ Sohl-Dickstein et al. (2015) [1] introduced diffusion probabilistic models, a cl
 
 ## Discrete Diffusion Models 
 
-In the diffusion process, discrete models require fixing a time schedule $0, \cdots, T$ prior to the training. Data is diffused exactly at these timesteps. It means there are $T$ latent variables \(\mathbf{x_0}, \dots, \mathbf{x_T}\). Noise is gradually added at those time steps and only those: therefore forward and reverse process only go through these time steps as seen in the following figure. 
+In the diffusion process, discrete models require fixing a time schedule $0, \cdots, T$ prior to the training. Data is diffused exactly at these timesteps. It means there are $T$ latent variables \\(\mathbf{x_0}, \dots, \mathbf{x_T}\\). Noise is gradually added at those time steps and only those: therefore forward and reverse process only go through these time steps as seen in the following figure. 
 
 ![](../../img/process.png)
 
