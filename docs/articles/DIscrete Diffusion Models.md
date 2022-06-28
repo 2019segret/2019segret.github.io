@@ -1,8 +1,8 @@
 ---
 layout: default
-title: Posts
+title: Discrete diffusion models
+parent: Posts
 nav_order: 3
-has_children: true
 ---
 
 # Diffusion Models (Part 1)
