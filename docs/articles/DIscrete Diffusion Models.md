@@ -4,6 +4,14 @@ title: Discrete diffusion models
 parent: Posts
 nav_order: 2
 ---
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
 <script type="text/javascript"
   src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.3/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
@@ -15,16 +23,16 @@ Sohl-Dickstein et al. (2015) [1] introduced diffusion probabilistic models, a cl
 
 ## Discrete Diffusion Models 
 
-In the diffusion process, discrete models require fixing a time schedule \(0, \cdots, T\) prior to the training. Data is diffused exactly at these timesteps. It means there are $T$ latent variables \(\mathbf{x_0}, \dots, \mathbf{x_T}\). Noise is gradually added at those time steps and only those: therefore forward and reverse process only go through these time steps as seen in the following figure. 
+In the diffusion process, discrete models require fixing a time schedule $0, \cdots, T$ prior to the training. Data is diffused exactly at these timesteps. It means there are $T$ latent variables $\mathbf{x_0}, \dots, \mathbf{x_T}$. Noise is gradually added at those time steps and only those: therefore forward and reverse process only go through these time steps as seen in the following figure. 
 
 ![](../../img/process.png)
 
-The length \(T\) of the forward process is a very important hyper parameter. The more steps there are the more precise the process is, with fewer errors made/accumulated at each time steps. On the opposite, it also implies more time to generate samples. There is a trade-off here.
+The length $T$ of the forward process is a very important hyper parameter. The more steps there are the more precise the process is, with fewer errors made/accumulated at each time steps. On the opposite, it also implies more time to generate samples. There is a trade-off here.
 
 ### DDPM: Denoising Diffusion Probabilistic Models
 
 
-Ho et al. [8] introduce DDPM. Given samples, the model starts from a data distribution \(q(x_0)\) and learns a distribution \(p_{\theta}(x_0)\) that approximates \(q(x_0)\) and is easy to sample from. For DDPM, the forward process is defined as a Markov chain that adds Gaussian noise to the data, according to a time schedule \(\beta_1, \dots, \beta_T\):
+Ho et al. [8] introduce DDPM. Given samples, the model starts from a data distribution $q(x_0)$ and learns a distribution $p_{\theta}(x_0)$ that approximates $q(x_0)$ and is easy to sample from. For DDPM, the forward process is defined as a Markov chain that adds Gaussian noise to the data, according to a time schedule $\beta_1, \dots, \beta_T$:
 
 $$
   \begin{split}
@@ -34,7 +42,7 @@ $$
   \end{split}
 $$
 
-Instead of having to diffuse step by step to reach an arbitrary time, which is heavy, there is a powerful property of the DDPM Markov chain that can be leveraged: (using the notation \(\alpha_t:= 1 - \beta_t, \ \overline{\alpha}_t = \prod_{s=1}^t \alpha_s\)), \(q(x_t | x_0) = \mathcal{N}(x_t \ ; \ \sqrt{\overline{\alpha}_t} x_0, (1 - \overline{\alpha}_t)\mathbf{I})\). This renders the forward process fairly easy as it allows to diffuse at any timestep \(t\) in closed form.  For the reverse process, DDPM looks for a distribution that is as close as possible to the posterior \(q\). The latent variables take the following form: 
+Instead of having to diffuse step by step to reach an arbitrary time, which is heavy, there is a powerful property of the DDPM Markov chain that can be leveraged: (using the notation $\alpha_t:= 1 - \beta_t, \ \overline{\alpha}_t = \prod_{s=1}^t \alpha_s$), $q(x_t | x_0) = \mathcal{N}(x_t \ ; \ \sqrt{\overline{\alpha}_t} x_0, (1 - \overline{\alpha}_t)\mathbf{I})$. This renders the forward process fairly easy as it allows to diffuse at any timestep $t$ in closed form.  For the reverse process, DDPM looks for a distribution that is as close as possible to the posterior $q$. The latent variables take the following form: 
 
 $$
 \begin{split}
@@ -56,19 +64,19 @@ $$
 \text{ELBO} = \mathbb{E}_q[D_{KL}(q(x_T | x_0) \ || \ p(x_T)) + \sum_{t > 1} D_{KL}(q(x_{t-1} | x_t, x_0) \ || \ p_\theta(x_{t-1} | x_t)) - \text{log}(p_\theta(x_0 | x_1))].
 $$
 
-As for \(\mathbf{\mu}_\theta(x_t, t)\) and \(\mathbf{\Sigma}_\theta(x_t, t)\), they have been left out until now. Ho et al.\~cite{DDPM} propose to fix \(\mathbf{\Sigma}_\theta(x_t, t) = \beta_t \mathbf{I}\) (Fore more details, Bao et al. [9] propose an analytic solution of the real estimate). Regarding \(\mathbf{\mu}_\theta\), authors use the fact that there exists a closed form for the posterior conditioned on \(x_0\):  \(q(x_{t-1} | x_t, x_0) = \mathcal{N}(x_{t-1}; \mathbf{\tilde{\mu}}_t(x_t, x_0), \tilde{\beta}_t \mathbf{I})\). They then inject it into the time-corresponding KL term of the ELBO equation and which leads to: 
+As for $\mathbf{\mu}_\theta(x_t, t)$ and $\mathbf{\Sigma}_\theta(x_t, t)$, they have been left out until now. Ho et al.\~cite{DDPM} propose to fix $\mathbf{\Sigma}_\theta(x_t, t) = \beta_t \mathbf{I}$ (Fore more details, Bao et al. [9] propose an analytic solution of the real estimate). Regarding $\mathbf{\mu}_\theta$, authors use the fact that there exists a closed form for the posterior conditioned on $x_0$:  $q(x_{t-1} | x_t, x_0) = \mathcal{N}(x_{t-1}; \mathbf{\tilde{\mu}}_t(x_t, x_0), \tilde{\beta}_t \mathbf{I})$. They then inject it into the time-corresponding KL term of the ELBO equation and which leads to: 
 
 $$
 \mathbf{\mu}_\theta(x_t, t) = \frac{1}{\sqrt{\alpha_t}} ( x_t - \frac{\beta_t}{\sqrt{1 - \overline{\alpha}_t}} \mathbf{\epsilon}_\theta(x_t, t))
 $$
 
-with \(x_t = \sqrt{\overline{\alpha}_t} x_0 + \sqrt{1 - \overline{\alpha}_t} \epsilon, \ \ \epsilon \sim \mathcal{N}(0, \mathbf{I})\) . This means that learning the latent variables boils down to learning the noise that's been added at each time step. Finally, Ho et al. [8] sum up the process with the following algorithms:
+with $x_t = \sqrt{\overline{\alpha}_t} x_0 + \sqrt{1 - \overline{\alpha}_t} \epsilon, \ \ \epsilon \sim \mathcal{N}(0, \mathbf{I})$ . This means that learning the latent variables boils down to learning the noise that's been added at each time step. Finally, Ho et al. [8] sum up the process with the following algorithms:
 
 ![](../../img/algoDDPM.png)
 
 ### DDIM: Denoising Diffusion Implicit Models
 
-The work of Song et al. [4] aims at reducing the number of iterations required by the generative models. Authors start from DDPM and observe that its objective only relies on \(q(x_t | x_0)\) but not on the terms \(q(x_{1:T} | x_0)\). Since it is possible from a set of marginals to produce different joint distributions, DDIM investigates non-Markovian inference process with the same objective function as DDPM.To do so, the work considers the following distributions, \(\sigma\) being a real positive \(T\)-dimensional vector: 
+The work of Song et al. [4] aims at reducing the number of iterations required by the generative models. Authors start from DDPM and observe that its objective only relies on $q(x_t | x_0)$ but not on the terms $q(x_{1:T} | x_0)$. Since it is possible from a set of marginals to produce different joint distributions, DDIM investigates non-Markovian inference process with the same objective function as DDPM.To do so, the work considers the following distributions, $\sigma$ being a real positive $T$-dimensional vector: 
 
 $$
 \begin{split}
@@ -89,9 +97,9 @@ $$
   \end{split}
 $$
 
-The complex mean \(m(x_0, x_t)\) is to ensure that \(q_\sigma(x_t | x_0) \sim \mathcal{N}(\sqrt{\alpha_t} x_0, (1 - \alpha_t)\mathbf{I})\), same as in DDPM. Notice that the process is not Markovian anymore as knowing \(x_t\) relies on knowing both \(x_{t-1}\) and \(x_0\). 
+The complex mean $m(x_0, x_t)$ is to ensure that $q_\sigma(x_t | x_0) \sim \mathcal{N}(\sqrt{\alpha_t} x_0, (1 - \alpha_t)\mathbf{I})$, same as in DDPM. Notice that the process is not Markovian anymore as knowing $x_t$ relies on knowing both $x_{t-1}$ and $x_0$. 
 
-For DDPM, we mentioned we were looking for a distribution that is trainable. Same goes for DDIM, they define \(p_\theta( x_{t-1} | x_t)\). The key idea is to leverage tractability of \(q_{\sigma}(x_{t-1} | x_t, x_0 )\). To do so requires knowledge of \(x_t\) (direct access since it is an observed variable) and \(x_0\). Now the trick is to rewrite \(x_t = \sqrt{\overline{\alpha}_t} x_0 + \sqrt{1 - \overline{\alpha}_t} \epsilon\) to get an estimate of denoised observation: 
+For DDPM, we mentioned we were looking for a distribution that is trainable. Same goes for DDIM, they define $p_\theta( x_{t-1} | x_t)$. The key idea is to leverage tractability of $q_{\sigma}(x_{t-1} | x_t, x_0 )$. To do so requires knowledge of $x_t$ (direct access since it is an observed variable) and $x_0$. Now the trick is to rewrite $x_t = \sqrt{\overline{\alpha}_t} x_0 + \sqrt{1 - \overline{\alpha}_t} \epsilon$ to get an estimate of denoised observation: 
 
 $$f_\theta^{(t)}(x_t):= (x_t - \sqrt{1 - \alpha_t} \epsilon_\theta^{(t)} (x_t)) / \sqrt{\alpha_t}$$
 
@@ -107,7 +115,7 @@ $$p_\theta( x_{t-1} | x_t) =
 \right.
 $$
 
-The rest is similar to DDPM with the same training steps but a different sampling formula. Two things worth noticing is that first DDIM becomes a DDPM model using \(\sigma_t = \sqrt{(1 - \alpha_{t-1}) / (1 - \alpha_t)} \sqrt{1 - \alpha_t / \alpha_{t-1}}\). Second, setting \(\forall t, \sigma_t = 0 \) renders the process completely deterministic. Samples are generated with a fixed procedure. This is that particular case than Song et al. name \textit{Denoising Diffusion Implicit Model}.
+The rest is similar to DDPM with the same training steps but a different sampling formula. Two things worth noticing is that first DDIM becomes a DDPM model using $\sigma_t = \sqrt{(1 - \alpha_{t-1}) / (1 - \alpha_t)} \sqrt{1 - \alpha_t / \alpha_{t-1}}$. Second, setting $\forall t, \sigma_t = 0 $ renders the process completely deterministic. Samples are generated with a fixed procedure. This is that particular case than Song et al. name \textit{Denoising Diffusion Implicit Model}.
 
 Authors also offer an accelerated generation process along with a correspondence with Neural ODEs that I leave aside in this work. 
 
