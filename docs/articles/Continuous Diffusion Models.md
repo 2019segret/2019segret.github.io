@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Discrete diffusion models
+title: Continuous Diffusion Models
 parent: Posts
 nav_order: 2
 ---
