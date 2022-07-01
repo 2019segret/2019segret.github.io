@@ -119,7 +119,7 @@ $$
 
 In practice this objective is not usable since \\(p_t(v_t \mid x_t)\\) is not known. This is the reason why they come up with a specifically tailored trainable objective which they call Hybrid Score Matching (HSM). The trick is to draw samples form \\(p_{data}(x_0)\\) while "marginalizing over the full initial velocity distribution" \\(p_0{v_0}\\). You can find a lot more details in the appendix of their paper. This now means we can train on \\(p(u_t \mid x_0)\\) which is Normal and tractable. Finally, the work parametrizes the score model to predict noise rather than the score itself, as in DDPM for instance.
 
-Let's write \\(u_{t} = \mu_{t} (x_0) + L_{t} \epsilon_{2d}\\), with \\(\Sigma_t = L_{t}L_t^\top\\) is the Cholesky decomposition of \\(p_t(u_t \mid x_0)\\)'s covariance matrix, \\(\epsilon_{2d} \sim \mathcal{N}(0_{2d}, I_{2d})\\), and \\(\mu_t(x_0)\\) is the mean of \\(p_t(u_t \mid x_0)\\). The annex B of the paper gives closed-form solutions to all these variables. 
+Let's write \\(u_{t} = \mu_{t} (x_0) + L_{t} \epsilon_{2d}\\), with \\(\Sigma_t = L_{t}L_t^\top\\) is the Cholesky decomposition of \\(p_t(u_t \mid x_0)\\)'s covariance matrix, \\( \epsilon_{2d} \sim \mathcal{N} ( 0_{2d}, I_{2d}) \\), and \\(\mu_t(x_0)\\) is the mean of \\(p_t(u_t \mid x_0)\\). The annex B of the paper gives closed-form solutions to all these variables. 
 Noting \\(\Sigma_t = \big(\begin{smallmatrix}
   \Sigma_t^{xx} & \Sigma_t^{xv}\\
   \Sigma_t^{xv} & \Sigma_t^{vv}
