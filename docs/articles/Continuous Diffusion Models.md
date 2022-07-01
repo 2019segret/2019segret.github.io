@@ -54,6 +54,7 @@ $$
 The first one is commonly referred to as VE SDE, which stands for Variance Exploding because when \\(t \rightarrow \infty\\) the process has an exploding variance and the second one is called Variance Preserving because it yields a fixed variance process (equal to one when the posterior distribution has unit variance). The associated work on ODEs that is accessible in their paper and left aside here. 
 
 The respective perturbation kernels are the following:
+
 $$
     p_{0t}( x(t) \mid x(0)) = \left\{
     \begin{array}{ll}
@@ -105,7 +106,9 @@ $$
 where \\(d\\) is the dimension of both \\(x\\) and \\(v\\), \\(M \in \mathbb{R}^+\\) is the hyperparameter that couples \\(x\\) and \\(v\\), along with the friction coefficient \\(\Gamma\\) that sets the strength of the noise injection. \\(\beta\\) is analogous to the \\(\beta(t)\\) in other SDEs. Authors show that the equilibrium distribution for the CLD equation is \\(p_{eq}(x_T, v_T) = \mathcal{N}(x_T; \mathbf{0}_d, \mathbf{I}_d)\mathcal{N}(v_T; \mathbf{0}_d, M\mathbf{I}_d)\\).
 
 In terms of objective function, Dickhorn et al.[5] choose to initialize the joint distribution the following way: \\(p_{eq}(x_T, v_T) = p_{data}(x_0)\mathcal{N}(v_0; \mathbf{0}_d, \gamma M\mathbf{I}_d)\\). We found this \\(\gamma\\) (\\(< 1\\) ) parameter to have indiscernible effect in practice. They also derive a novel, tailored score matching objective.
-$$\small
+
+$$
+\small
     \text{min}_{\theta} \mathbb{E}_{t\sim\mathcal{U}([0,T])}\mathbb{E}_{u_t\sim p_t(u_t)} \left[ 
     \left\lVert
     s_\theta(u_t, t) - \nabla_{v_t} \ log \ p_t(v_t \mid x_t)
@@ -116,11 +119,11 @@ $$
 
 In practice this objective is not usable since \\(p_t(v_t \mid x_t)\\) is not known. This is the reason why they come up with a specifically tailored trainable objective which they call Hybrid Score Matching (HSM). The trick is to draw samples form \\(p_{data}(x_0)\\) while "marginalizing over the full initial velocity distribution" \\(p_0{v_0}\\). You can find a lot more details in the appendix of their paper. This now means we can train on \\(p(u_t \mid x_0)\\) which is Normal and tractable. Finally, the work parametrizes the score model to predict noise rather than the score itself, as in DDPM for instance.
 
-Let's write \\( u_t = \mathbf{\mu}_t(x_0) +\\) \\(\mathbf{L}_ \epsilon_{2d}\\), with \\(\Sigma_t = \mathbf{L}_t\mathbf{L}_t^\top\\) is the Cholesky decomposition of \\(p_t(u_t \mid x_0)\\)'s covariance matrix, \\(\epsilon_{2d} \sim \mathcal{N}(\mathbf{0}_ {2d}, \mathbf{I}_{2d})\\), and \\(\mu_t(x_0)\\) is the mean of \\(p_t(u_t \mid x_0)\\). The annex B of the paper gives closed-form solutions to all these variables. Noting 
+Let's write \\(u_t = \mathbf{\mu}_t(x_0) + \mathbf{L}_{t} \epsilon_{2d}\\), with \\(\Sigma_t = \mathbf{L}_{t}\mathbf{L}_t^\top\\) is the Cholesky decomposition of \\(p_t(u_t \mid x_0)\\)'s covariance matrix, \\(\epsilon_{2d} \sim \mathcal{N}(\mathbf{0}_{2d}, \mathbf{I}_{2d})\\), and \\(\mu_t(x_0)\\) is the mean of \\(p_t(u_t \mid x_0)\\). The annex B of the paper gives closed-form solutions to all these variables. Noting 
 \\(\Sigma_t = \big(\begin{smallmatrix}
   \Sigma_t^{xx} & \Sigma_t^{xv}\\
   \Sigma_t^{xv} & \Sigma_t^{vv}
-\end{smallmatrix}\big)\\), we define \\(l_t = \sqrt{\frac{\Sigma_t^{xx}}{\Sigma_t^{xx}\Sigma_t^{vv} - (\Sigma_t^{xv})^2}}\\), we get \\(\nabla_{v_t} \text{log} \ p_t (u_t \mid x_0) = -l_t \epsilon_{d:2d}\\). Additionally, since the marginal is not Normal at all times authors assume they can parametrize it with a Normal score corrected with a residual term. 
+\end{smallmatrix}\big)\\), we define \\(l_t = \sqrt{\frac{\Sigma_t^{xx}}{\Sigma_t^{xx}\Sigma_t^{vv} - (\Sigma_t^{xv})^2}}\\), we get \\(\nabla_{v_t} log p_t (u_t \mid x_0) = -l_t \epsilon_{d:2d}\\). Additionally, since the marginal is not Normal at all times authors assume they can parametrize it with a Normal score corrected with a residual term. 
 Finally, they propose:
 
 $$
