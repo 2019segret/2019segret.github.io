@@ -36,7 +36,7 @@ $$
 
 such that \\(s_\theta^*(x,t) = \nabla_x \ \text{log} \ p_t(x)\\).
 
-Also, much like it was appreciable that we could diffuse at an arbitrary time step in discrete models, the same goes for continuous models. This is where the design of SDEs becomes important. When $f(\cdot, t)$ is affine, the transition kernel $p_{0t}(x(t) \bar x(0))$ from $0$ to $t$ is Gaussian, with a usually closed-form formula for the mean and the variance. This lets us diffuse at any time step without requiring us to go through an intermediary step. 
+Also, much like it was appreciable that we could diffuse at an arbitrary time step in discrete models, the same goes for continuous models. This is where the design of SDEs becomes important. When \\(f(\cdot, t)\\) is affine, the transition kernel \\(p_{0t}(x(t) \bar x(0))\\) from \\(0\\) to \\(t\\) is Gaussian, with a usually closed-form formula for the mean and the variance. This lets us diffuse at any time step without requiring us to go through an intermediary step. 
 
 ## Variance Exploding , Variance Preserving SDES
 
@@ -68,7 +68,7 @@ At training time, one can sample batch_size different time elements \\(t \sim \m
 
 ## Critically-Damped Langevin Diffusion
 
-At the end of 2021, Dockhorn et al.~[5] proposed a fairly elegant approach to SGMs, based on statistical mechanics. Their whole idea is to add a second variable that's coupled to the data \\(x\\). Much like there is a momentum to a position in physics, authors add \\(v\\) to \\(x\\). This augmented diffusion process is supposed to be much more smooth as the noise is gradually injected not in \\(x\\) but in \\(v\\). Since variables are coupled, $x$ has also noise that's injected but in a smoother way. The work proposes a very convenient way to display that idea in the following figure. In the following, \\(u_t = (x_t, v_t)\\).
+At the end of 2021, Dockhorn et al.~[5] proposed a fairly elegant approach to SGMs, based on statistical mechanics. Their whole idea is to add a second variable that's coupled to the data \\(x\\). Much like there is a momentum to a position in physics, authors add \\(v\\) to \\(x\\). This augmented diffusion process is supposed to be much more smooth as the noise is gradually injected not in \\(x\\) but in \\(v\\). Since variables are coupled, \\(x\\) has also noise that's injected but in a smoother way. The work proposes a very convenient way to display that idea in the following figure. In the following, \\(u_t = (x_t, v_t)\\).
 
 ![](../../img/CLD.png)
 
@@ -119,8 +119,8 @@ $$
 
 In practice this objective is not usable since \\(p_t(v_t \mid x_t)\\) is not known. This is the reason why they come up with a specifically tailored trainable objective which they call Hybrid Score Matching (HSM). The trick is to draw samples form \\(p_{data}(x_0)\\) while "marginalizing over the full initial velocity distribution" \\(p_0{v_0}\\). You can find a lot more details in the appendix of their paper. This now means we can train on \\(p(u_t \mid x_0)\\) which is Normal and tractable. Finally, the work parametrizes the score model to predict noise rather than the score itself, as in DDPM for instance.
 
-Let's write \\(u_t = \mathbf{\mu}_t(x_0) + \mathbf{L}_{t} \epsilon_{2d}\\), with \\(\Sigma_t = \mathbf{L}_{t}\mathbf{L}_t^\top\\) is the Cholesky decomposition of \\(p_t(u_t \mid x_0)\\)'s covariance matrix, \\(\epsilon_{2d} \sim \mathcal{N}(\mathbf{0}_{2d}, \mathbf{I}_{2d})\\), and \\(\mu_t(x_0)\\) is the mean of \\(p_t(u_t \mid x_0)\\). The annex B of the paper gives closed-form solutions to all these variables. Noting 
-\\(\Sigma_t = \big(\begin{smallmatrix}
+Let's write \\(u_{t} = \mu_{t} (x_0) + L_{t} \epsilon_{2d}\\), with \\(\Sigma_t = L_{t}L_t^\top\\) is the Cholesky decomposition of \\(p_t(u_t \mid x_0)\\)'s covariance matrix, \\(\epsilon_{2d} \sim \mathcal{N}(0_{2d}, I_{2d})\\), and \\(\mu_t(x_0)\\) is the mean of \\(p_t(u_t \mid x_0)\\). The annex B of the paper gives closed-form solutions to all these variables. 
+Noting \\(\Sigma_t = \big(\begin{smallmatrix}
   \Sigma_t^{xx} & \Sigma_t^{xv}\\
   \Sigma_t^{xv} & \Sigma_t^{vv}
 \end{smallmatrix}\big)\\), we define \\(l_t = \sqrt{\frac{\Sigma_t^{xx}}{\Sigma_t^{xx}\Sigma_t^{vv} - (\Sigma_t^{xv})^2}}\\), we get \\(\nabla_{v_t} log p_t (u_t \mid x_0) = -l_t \epsilon_{d:2d}\\). Additionally, since the marginal is not Normal at all times authors assume they can parametrize it with a Normal score corrected with a residual term. 
@@ -190,7 +190,7 @@ The objective resembled the following: \\(l_{xx}^2 \left\lVert \epsilon_{0:d} - 
 
 ### Results
 
-We tried training with HSM on two different internal datasets, one of drum sounds and one of synthesizer sounds. They are respectively composed of approximately 300.000 kick, snare, cymbal (in equal proportions), and 500.000 synthesizer sounds. The samples have a sample rate of \\(44.1\\)KHz and are recorded in mono. The audio was restricted to 21.000 timesteps because most sounds last less than 0.5 seconds. At this point, it has become abundantly clear that training on data $x \in \mathbb{R}^{21000}$ is too hard, without any access to real computation abilities. Therefore, techniques such as cascading (in the next article) feel required. Also, all generation is pre-processed using a Mu-law, and noise is embedded with Random Fourier Features in the U-net.
+We tried training with HSM on two different internal datasets, one of drum sounds and one of synthesizer sounds. They are respectively composed of approximately 300.000 kick, snare, cymbal (in equal proportions), and 500.000 synthesizer sounds. The samples have a sample rate of \\(44.1\\)KHz and are recorded in mono. The audio was restricted to 21.000 timesteps because most sounds last less than 0.5 seconds. At this point, it has become abundantly clear that training on data \\(x \in \mathbb{R}^{21000}\\) is too hard, without any access to real computation abilities. Therefore, techniques such as cascading (in the next article) feel required. Also, all generation is pre-processed using a Mu-law, and noise is embedded with Random Fourier Features in the U-net.
 
 ![](../../img/weiiiiiiiird.png)
 
